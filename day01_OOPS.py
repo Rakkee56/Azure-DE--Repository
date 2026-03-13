@@ -1,175 +1,117 @@
 class BankAccount:
- 
-    bank_name = "Azure Bank"                          # Class Variable
- 
-    def __init__(self, owner, balance=0):
-        self.owner    = owner
-        self._balance = balance
-        print(f"\n Welcome {self.owner}! Account created at {self.bank_name}")
-        print("=" * 45)
- 
+    bank_name = 'Azure Bank'
+    def __init__(self,owner,balance,acctype):
+        self.owner = owner
+        self.balance = balance
+        self.acctype = acctype
+        print('=' * 45)
+        print(f"Welcome to {self.bank_name} - {self.owner} and Your Balance is {self.balance}")
+        print(f"Owner : {self.owner}")
+        print(f"Balance {self.balance}")
+        print(f"Account Type : {self.acctype}")
+        print('=' * 45)
+
     @property
-    def balance(self):                                # Getter
+    def balance(self):
         return self._balance
- 
+
     @balance.setter
-    def balance(self, value):                         # Setter with validation
-        if not isinstance(value, (int, float)):
-            print("Balance must be a number!")
-        elif value < 0:
-            print("Balance cannot be negative!")
+    def balance(self,value):
+        if value < 0:
+            print("Balance cannot be zero")
+            self._balance = 0
+        elif value > 1000000:
+            print(f"Balance exceeds Limit")
+            self._balance = 1000000
         else:
             self._balance = value
- 
-    def deposit(self, amount):
-        if amount <= 0:
-            print("Amount must be greater than zero!")
-        else:
-            self.balance += amount
-            print(f"Deposited ₹{amount} | New Balance: ₹{self.balance}")
- 
-    def withdraw(self, amount):
-        if amount <= 0:
-            print("Amount must be greater than zero!")
-        elif amount > self.balance:
-            print(f"Insufficient funds! Available: ₹{self.balance}")
+
+    def deposit(self,amount):
+        self.balance += amount
+        print('=' * 45)
+        print(f"Money Deposited : {amount} and Your Current Balance : {self.balance}")
+        print('=' * 45)
+
+    def withdraw(self,amount):
+        if amount > self.balance:
+            print('=' * 45)
+            print(f"Insufficient Balance Your Current Balance : {self.balance}")
+            print('=' * 45)
         else:
             self.balance -= amount
-            print(f"Withdrew ₹{amount} | New Balance: ₹{self.balance}")
- 
-    def transfer(self, amount, target):
-        if amount <= 0:
-            print("Amount must be greater than zero!")
-        elif amount > self.balance:
-            print(f"Insufficient funds! Available: ₹{self.balance}")
+            print('=' * 45)
+            print(f"Money withdrawn : {amount} and Your Current Balance : {self.balance}")
+            print('=' * 45)
+
+    def get_summary(self):
+        print('=' * 45)
+        print(f"Owner : {self.owner} | Balance : {self.balance}")
+        print('=' * 45)
+
+class HDFCAccount(BankAccount):
+    def __init__(self,owner,balance,acctype):
+        super().__init__(owner,balance,acctype)
+        self.transaction_fee = 0.05
+
+    def withdraw(self,amount):
+        fee = round(amount* self.transaction_fee,2)
+        total = amount + fee
+        if total > self.balance:
+            print('=' * 45)
+            print(f"Insufficient Funds")
+            print('=' * 45)
         else:
-            self.balance         -= amount
-            target.balance       += amount
-            print(f"{amount} transferred to {target.owner}")
-            print(f"   Your Balance         : ₹{self.balance}")
-            print(f"   {target.owner}'s Balance : ₹{target.balance}")
- 
-    def account_details(self):
-        print(f"\n{'=' * 45}")
-        print(f"   {self.bank_name}")
-        print(f"{'=' * 45}")
-        print(f"   Owner   : {self.owner}")
-        print(f"   Balance : ₹{self.balance}")
-        print(f"{'=' * 45}")
- 
-    def __str__(self):
-        return f"BankAccount | {self.owner} | ₹{self.balance}"
- 
- 
-# ============================================================
-# CHILD CLASS — Inherits everything from BankAccount
-# ============================================================
- 
-class SavingsAccount(BankAccount):
- 
-    def __init__(self, owner, balance=0, interest_rate=0.04):
-        super().__init__(owner, balance)
-        self.interest_rate = interest_rate
-        print(f"   Interest Rate : {self.interest_rate * 100}%")
-        print("=" * 45)
- 
+            print('=' * 45)
+            print(f"Withdrawn Rs.{amount} "
+                       f"+ fee Rs.{fee} |"
+                       f"Balance : Rs.{self.balance}")
+            print('=' * 45)
+
+class ICICIAccount(BankAccount):
+    def __init__(self,owner,balance,acctype):
+        super().__init__(owner,balance,acctype)
+        self.interest_rate = 0.05
+
     def add_interest(self):
-        earned           = self.balance * self.interest_rate
-        self.balance    += earned
-        print(f"\n Interest Applied!")
-        print(f"Rate : {self.interest_rate*100}%")
-        print(f"Earned : {earned:.2f}")
-        print(f"Balance : {self.balance}")
-        print("=" * 45)
-    
-    def account_details(self):
-        print("=" * 45)
-        print(f"{self.bank_name} - Savings Account")
-        print(f"{'=' * 45}")
+        interest = round(self.balance * self.interest_rate,2)
+        self.balance += interest
+        print('=' * 45)
+        print(f"Interest : {interest} added")
+        print('=' * 45)
+
+class LICBank(BankAccount):
+    def __init__(self,owner,balance,acctype,policy_number):
+        super().__init__(owner,balance,acctype)
+        self.policy_number = policy_number
+
+    def get_summary(self):
+        print('=' * 45)
+        print(f" Account Summary")
+        print('=' * 45)
         print(f"Owner : {self.owner}")
-        print(f"Balance : {self.balance}")
-        print(f"Rate : {self.interest_rate * 100}%")
-        print("=" * 45)
-        
-    def __str__(self):
-        return f"SavingsAccount | {self.owner} | {self.balance:.2f} | Rate : {self.interest_rate * 100}%"
-        
-    print("=" * 45)
-    print(" CLASS AND OBJECT")
-    print("=" * 45)
-    
-    rakesh = BankAccount("Rakesh",10000)
-    ravi = BankAccount("Ravi",5000)
-    rithvi = BankAccount("Rithvi",80000)
-    
-    print(f"\nrakesh owner : {rakesh.owner}")
-    print(f"rakesh balance : {rakesh.balance}")
-    print(f"\nravi owner : {ravi.owner}")
-    print(f"ravi balance : {ravi.balance}")
-    
-    
-    print("\n" + "=" * 45)
-    print("methods = Deposit,Withdraw,Transfer")
-    print('=' * 45)
-    
-    rakesh.deposit(50000)
-    rakesh.withdraw(3000)
-    rakesh.withdraw(99999)
-    rakesh.deposit(-50000)
-    rakesh.transfer(2000,rithvi)
-    
-    print('=' * 45)
-    print("Account Details Method") 
-    print('=' * 45)
-    
-    rakesh.account_details()
-    ravi.account_details()
-    
-    
-    print("\n" + "=" * 45)
-    print("__str__ - Print Object directly")
-    print("=" * 45)
-    
-    print(rakesh)
-    print(ravi)
-    
-    print("\n" + "=" * 45)
-    print("Class Variable - Same for All Objects")
-    print("=" * 45)
-    
-    acc1 = BankAccount("Priya",20000)
-    acc2 = BankAccount("Devi",30000)
-    
-    print(f"\nacc1 bank : {acc1.bank_name}")
-    print(f"\nacc2 bank : {acc2.bank_name}")
-    
-    print("\n" + "=" * 45)
-    print("Property Setter and Getter")
-    print('=' * 45)
-    
-    acc = BankAccount("Rakesh",10000)
-    
-    print(f"Rading Balance : {acc.balance}")
-    
-    acc.balance = 50000
-    
-    print(f"Rading Balance After update: {acc.balance}")
-    
-    acc.balance = -999
-    print(f"Rading Balance After -999 update: {acc.balance}")
-    
-    acc.balance = "hello"
-    print(f"Rading Balance After Hello update: {acc.balance}")
-    
-    print("\n" + "=" * 45)
-    print(f"Inheritance - Savings Account")
-    print('=' * 45)
-    
-    savings = SavingsAccount("Rakesh",10000,0.04)
-    
-    savings.deposit(5000)
-    savings.withdraw(2000)
-    savings.add_interest()
-    savings.account_details()
-    print(savings)    
- 
+        print(f"balance : {self.balance}")
+        print(f"Account Type : {self.acctype}")
+        print(f"Policy Number : {self.policy_number}")
+        print('=' * 45)
+
+
+
+c1 = BankAccount('Rakesh',2000,"Savings")
+c2 = BankAccount('Raam',3000,'Current')
+c3 = BankAccount('Rishi',400000000,'Current')
+c1.deposit(4000)
+c1.withdraw(20000)
+c1.get_summary()
+h1 = HDFCAccount("Kumar",2000000,'SAVINGS')
+h1.withdraw(20000)
+
+
+i1 = ICICIAccount("Ritish",2000,'SAVINGS')
+i1.add_interest()
+
+l1 = LICBank('Deepthi',20000,'LIFE','LIC-12345')
+l1.deposit(1000)
+l1.withdraw(500)
+l1.get_summary()
+
+
